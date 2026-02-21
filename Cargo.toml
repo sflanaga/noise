@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 macroquad = "0.4"
 fastrand = "2.0"
+clap = { version = "4", features = ["derive"] }
