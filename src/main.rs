@@ -1,8 +1,12 @@
 mod noise;
 
+#[cfg(not(target_arch = "wasm32"))]
 use clap::Parser;
-use noise::{Config, NoiseMode};
+#[cfg(not(target_arch = "wasm32"))]
+use noise::NoiseMode;
+use noise::Config;
 
+#[cfg(not(target_arch = "wasm32"))]
 #[derive(Parser)]
 #[command(name = "noise", about = "Noise Visualization")]
 struct Cli {
@@ -25,12 +29,17 @@ struct Cli {
 
 #[macroquad::main("Noise Visualization")]
 async fn main() {
-    let cli = Cli::parse();
-    let config = Config {
-        mode: cli.mode,
-        bw: cli.bw,
-        fps: cli.fps,
-        lines: cli.lines,
+    #[cfg(not(target_arch = "wasm32"))]
+    let config = {
+        let cli = Cli::parse();
+        Config {
+            mode: cli.mode,
+            bw: cli.bw,
+            fps: cli.fps,
+            lines: cli.lines,
+        }
     };
+    #[cfg(target_arch = "wasm32")]
+    let config = Config::default();
     noise::run(config).await;
 }
